@@ -92,7 +92,7 @@ export default function HomeScreen() {
     };
 
     // Use shared protocol context for real-time sync
-    const { completedCount, totalCount, progress } = useProtocol();
+    const { completedCount, totalCount, progress, getCurrentStatus, allPhasesComplete } = useProtocol();
 
     // Mock data for wealth (will be context later)
     const netWorth = 55000;
@@ -174,7 +174,7 @@ export default function HomeScreen() {
                     </View>
                 </GlassCard>
 
-                {/* Card 2: Discipline - Seneca Blue Progress */}
+                {/* Card 2: Discipline - Protocol Status */}
                 <GlassCard onPress={() => router.push('/protocol')}>
                     <View style={styles.cardHeader}>
                         <View>
@@ -185,18 +185,53 @@ export default function HomeScreen() {
                             <Text style={styles.seeAllText}>See All</Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.statusText}>
-                        Morning Ignition: <Text style={styles.statusHighlight}>{completedCount}/{totalCount}</Text> Complete
-                    </Text>
-                    {/* Liquid Gradient Progress Bar */}
-                    <View style={styles.progressTrack}>
-                        <LinearGradient
-                            colors={Gradients.senecaBlue}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={[styles.progressFill, { width: `${progress}%` }]}
-                        />
-                    </View>
+
+                    {/* Dynamic content based on protocol state */}
+                    {allPhasesComplete ? (
+                        // All Complete State - Celebration!
+                        <View style={styles.protocolCompleteContainer}>
+                            <View style={styles.protocolCompleteRow}>
+                                <Text style={styles.protocolCompleteEmoji}>🏆</Text>
+                                <View style={styles.protocolCompleteTextContainer}>
+                                    <Text style={styles.protocolCompleteTitle}>Day Complete!</Text>
+                                    <Text style={styles.protocolCompleteSubtitle}>All 17 habits conquered</Text>
+                                </View>
+                            </View>
+                            {/* Full progress bar */}
+                            <View style={styles.progressTrack}>
+                                <LinearGradient
+                                    colors={['#10B981', '#34D399']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={[styles.progressFill, { width: '100%' }]}
+                                />
+                            </View>
+                        </View>
+                    ) : (
+                        // In Progress State - Show current phase
+                        <>
+                            <View style={styles.protocolStatusRow}>
+                                <View style={styles.protocolPhaseInfo}>
+                                    <Text style={styles.protocolPhaseName}>{getCurrentStatus().phase}</Text>
+                                    <Text style={styles.protocolPhaseProgress}>
+                                        {completedCount} of {totalCount} tasks
+                                    </Text>
+                                </View>
+                                <View style={styles.protocolCountBadge}>
+                                    <Text style={styles.protocolCountText}>{completedCount}/{totalCount}</Text>
+                                </View>
+                            </View>
+                            {/* Progress bar */}
+                            <View style={styles.progressTrack}>
+                                <LinearGradient
+                                    colors={Gradients.senecaBlue}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={[styles.progressFill, { width: `${progress}%` }]}
+                                />
+                            </View>
+                        </>
+                    )}
                 </GlassCard>
 
                 {/* Card 3: Empire - Wealth Teal */}
@@ -445,5 +480,61 @@ const styles = StyleSheet.create({
     reflectText: {
         ...Typography.headline,
         color: '#FFF',
+    },
+    // Protocol Peek Styles
+    protocolStatusRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: Spacing.sm,
+    },
+    protocolPhaseInfo: {
+        flex: 1,
+    },
+    protocolPhaseName: {
+        ...Typography.headline,
+        color: Colors.text,
+    },
+    protocolPhaseProgress: {
+        ...Typography.footnote,
+        color: Colors.textMuted,
+        marginTop: 2,
+    },
+    protocolCountBadge: {
+        paddingHorizontal: Spacing.md,
+        paddingVertical: Spacing.sm,
+        backgroundColor: SenecaBlue.start + '15',
+        borderRadius: Radii.sm,
+    },
+    protocolCountText: {
+        ...Typography.headline,
+        color: SenecaBlue.start,
+        fontWeight: '700',
+    },
+    // Protocol Complete State
+    protocolCompleteContainer: {
+        marginTop: Spacing.xs,
+    },
+    protocolCompleteRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: Spacing.sm,
+    },
+    protocolCompleteEmoji: {
+        fontSize: 32,
+        marginRight: Spacing.md,
+    },
+    protocolCompleteTextContainer: {
+        flex: 1,
+    },
+    protocolCompleteTitle: {
+        ...Typography.headline,
+        color: '#10B981',
+        fontWeight: '700',
+    },
+    protocolCompleteSubtitle: {
+        ...Typography.footnote,
+        color: Colors.textMuted,
+        marginTop: 2,
     },
 });
