@@ -37,14 +37,14 @@ export const DestructiveRed = '#9F3E3E'; // Muted Brick Red
 // LIGHT MODE PALETTE
 // ============================================
 export const LightColors = {
-    // Canvas: "Stoic Paper"
-    background: '#F9F8F5',        // High-quality resume paper
+    // Canvas: "iOS System Gray"
+    background: '#F2F2F7',        // System Grouped Background
     secondaryBackground: '#FFFFFF',
 
-    // Glass Material
-    glass: 'rgba(255, 255, 255, 0.65)',
-    glassBorder: 'rgba(255, 255, 255, 0.4)',
-    glassBlur: 20,
+    // Glass Material -> Solid White for Sections
+    glass: '#FFFFFF',
+    glassBorder: 'rgba(0, 0, 0, 0.05)', // Faint border for definition
+    glassBlur: 0, // No blur needed for solid white
 
     // Typography: "The Ink"
     text: '#1C1C1E',              // Primary - Headings, numbers
